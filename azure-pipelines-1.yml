@@ -1,0 +1,25 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+# Step 1: Checkout the code
+- checkout: self
+
+# Step 2: Build the project
+- script: mvn clean install
+  displayName: 'Build and Install'
+
+# Step 3: Run regression tests
+- script: mvn test
+  displayName: 'Run Regression Tests'
+
+# Step 4: Publish test results (JUnit format)
+- task: PublishTestResults@2
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    failTaskOnFailedTests: true
+  displayName: 'Publish Test Results'
